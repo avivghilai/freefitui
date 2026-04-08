@@ -4,11 +4,11 @@ import { useSearchStore } from "@/stores/searchStore";
 import type { ClubSearchResponse } from "@freefitui/shared";
 
 export function useClubs() {
-  const { query, cityId, categoryId, lat, lng, radius, page } =
+  const { query, cityId, categoryId, lat, lng, radius, page, mapBounds } =
     useSearchStore();
 
   return useQuery({
-    queryKey: ["clubs", { query, cityId, categoryId, lat, lng, radius, page }],
+    queryKey: ["clubs", { query, cityId, categoryId, lat, lng, radius, page, mapBounds }],
     queryFn: () => {
       const params: Record<string, string> = {};
       if (query) params.q = query;
@@ -18,6 +18,13 @@ export function useClubs() {
         params.lat = String(lat);
         params.lng = String(lng);
         params.radius = String(radius);
+      }
+      // Only send map bounds when there's no text query
+      if (mapBounds && !query) {
+        params.north = String(mapBounds.north);
+        params.south = String(mapBounds.south);
+        params.east = String(mapBounds.east);
+        params.west = String(mapBounds.west);
       }
       params.page = String(page);
       params.limit = "20";

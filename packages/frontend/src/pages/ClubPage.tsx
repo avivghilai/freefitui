@@ -41,6 +41,12 @@ function FreeFitIcon({ className = "w-5 h-5" }: { className?: string }) {
 // Opening hours
 // ---------------------------------------------------------------------------
 
+/** Extract just the time range from an hours string, stripping Hebrew day suffixes */
+function cleanHoursValue(value: string): string {
+  const match = value.match(/(\d{2}:\d{2}[-–]\d{2}:\d{2})/);
+  return match ? match[1] : value;
+}
+
 function OpeningHours({
   sunThu,
   friday,
@@ -63,7 +69,7 @@ function OpeningHours({
   return (
     <div className="bg-white rounded-2xl border border-warm-200/60 p-5">
       <h2 className="font-bold text-warm-900 text-lg mb-3">שעות פעילות</h2>
-      <div className="rounded-xl overflow-hidden">
+      <div className="rounded-xl overflow-hidden" dir="rtl">
         {rows.map((row, i) => (
           <div
             key={row.label}
@@ -72,7 +78,7 @@ function OpeningHours({
             }`}
           >
             <span className="text-warm-800">{row.label}</span>
-            <span className="text-warm-900 font-medium">{row.value}</span>
+            <span className="text-warm-900 font-medium">{cleanHoursValue(row.value!)}</span>
           </div>
         ))}
       </div>
@@ -244,11 +250,11 @@ function Rules({ rules }: { rules: string[] }) {
 function MapPreview({
   latitude,
   longitude,
-  name,
+  address,
 }: {
   latitude: number;
   longitude: number;
-  name: string;
+  address: string;
 }) {
   const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
 
@@ -256,24 +262,24 @@ function MapPreview({
     <div className="bg-white rounded-2xl border border-warm-200/60 p-5">
       <h2 className="font-bold text-warm-900 text-lg mb-3">מיקום</h2>
       <div className="rounded-xl overflow-hidden bg-warm-50 border border-warm-200/40">
-        <div className="p-4 flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm text-warm-800">
-            <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+        <div className="p-4 flex items-center justify-between" dir="rtl">
+          <div className="flex items-center gap-2 text-sm text-warm-800 min-w-0">
+            <svg className="w-4 h-4 text-emerald-500 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
             </svg>
-            <span>{latitude.toFixed(4)}, {longitude.toFixed(4)}</span>
+            <span className="truncate">{address}</span>
           </div>
           <a
             href={googleMapsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-emerald-500 hover:bg-emerald-600 px-4 py-2 rounded-lg transition"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-emerald-500 hover:bg-emerald-600 px-4 py-2 rounded-lg transition shrink-0 mr-3"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m0 0 3-3m-3 3-3-3m12.75-3A2.25 2.25 0 0 0 16.5 6.75h-9A2.25 2.25 0 0 0 5.25 9v6a2.25 2.25 0 0 0 2.25 2.25h9A2.25 2.25 0 0 0 18.75 15V9Z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
             </svg>
-            נווט ל{name}
+            פתח בגוגל מפות
           </a>
         </div>
       </div>
@@ -499,7 +505,7 @@ export default function ClubPage() {
 
         {/* Map preview */}
         {latitude != null && longitude != null && (
-          <MapPreview latitude={latitude} longitude={longitude} name={name} />
+          <MapPreview latitude={latitude} longitude={longitude} address={address} />
         )}
       </div>
     </div>

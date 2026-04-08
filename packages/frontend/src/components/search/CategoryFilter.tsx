@@ -19,7 +19,7 @@ export default function CategoryFilter() {
   if (!categories?.length) return null;
 
   return (
-    <div className="flex gap-2 py-3 px-4 overflow-x-auto scrollbar-hide border-b border-warm-200/40">
+    <div className="flex gap-2 py-3 px-4 overflow-x-auto scrollbar-hide border-b border-warm-200/40 lg:flex-wrap lg:overflow-x-visible">
       <button
         onClick={() => setCategoryId(null)}
         className={`shrink-0 px-4 py-2 rounded-xl text-[13px] font-semibold transition-all duration-200 ${

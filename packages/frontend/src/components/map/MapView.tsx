@@ -5,8 +5,9 @@ import Map, {
   Layer,
   Popup,
   NavigationControl,
+  GeolocateControl,
 } from "react-map-gl";
-import type { MapRef, MapLayerMouseEvent, GeoJSONSource } from "react-map-gl";
+import type { MapRef, MapLayerMouseEvent, GeoJSONSource, ViewStateChangeEvent } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useMapClubs } from "@/hooks/useMapClubs";
 import { useClubs } from "@/hooks/useClubs";
@@ -54,6 +55,9 @@ export default function MapView() {
   const query = useSearchStore((s) => s.query);
   const cityId = useSearchStore((s) => s.cityId);
   const categoryId = useSearchStore((s) => s.categoryId);
+  const setMapBounds = useSearchStore((s) => s.setMapBounds);
+  const flyToClub = useSearchStore((s) => s.flyToClub);
+  const setFlyToClub = useSearchStore((s) => s.setFlyToClub);
 
   const [popupClub, setPopupClub] = useState<ClubSearchResult | null>(null);
   const prevFilterRef = useRef<string>("");
@@ -81,6 +85,7 @@ export default function MapView() {
           clubTypeName: club.clubTypeName || "",
           areaName: club.areaName || "",
           logoUrl: club.logoUrl || "",
+          address: club.address || "",
         },
       })),
     };
@@ -212,7 +217,54 @@ export default function MapView() {
 
   const handleMapLoad = useCallback(() => {
     mapLoadedRef.current = true;
-  }, []);
+    // Set initial bounds once map loads
+    const map = mapRef.current;
+    if (map) {
+      const bounds = map.getBounds();
+      if (bounds) {
+        setMapBounds({
+          north: bounds.getNorth(),
+          south: bounds.getSouth(),
+          east: bounds.getEast(),
+          west: bounds.getWest(),
+        });
+      }
+    }
+  }, [setMapBounds]);
+
+  // Update map bounds when user pans/zooms (Issue 3)
+  const handleMoveEnd = useCallback(
+    (_e: ViewStateChangeEvent) => {
+      const map = mapRef.current;
+      if (!map) return;
+      const bounds = map.getBounds();
+      if (bounds) {
+        setMapBounds({
+          north: bounds.getNorth(),
+          south: bounds.getSouth(),
+          east: bounds.getEast(),
+          west: bounds.getWest(),
+        });
+      }
+    },
+    [setMapBounds]
+  );
+
+  // Fly to club when card is clicked (Issue 9)
+  useEffect(() => {
+    if (!flyToClub || !mapRef.current) return;
+    mapRef.current.flyTo({
+      center: [flyToClub.lng, flyToClub.lat],
+      zoom: 15,
+      duration: 800,
+    });
+    const club = findClub(flyToClub.id);
+    if (club) {
+      setSelectedClubId(club.id);
+      setPopupClub(club);
+    }
+    setFlyToClub(null);
+  }, [flyToClub, findClub, setSelectedClubId, setFlyToClub]);
 
   return (
     <Map
@@ -225,6 +277,7 @@ export default function MapView() {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onLoad={handleMapLoad}
+      onMoveEnd={handleMoveEnd}
       interactiveLayerIds={[
         CLUSTERS_LAYER,
         UNCLUSTERED_LAYER,
@@ -232,6 +285,7 @@ export default function MapView() {
       ]}
     >
       <NavigationControl position="top-left" />
+      <GeolocateControl position="top-left" trackUserLocation />
 
       <Source
         id="clubs"
@@ -328,28 +382,62 @@ export default function MapView() {
           onClose={handlePopupClose}
           closeOnClick={false}
           className="map-popup"
-          maxWidth="240px"
+          maxWidth="280px"
         >
-          <div className="p-1 text-right" dir="rtl">
-            <h3 className="font-semibold text-stone-900 text-sm leading-tight">
-              {popupClub.name}
-            </h3>
-            {popupClub.clubTypeName && (
-              <span className="inline-block text-xs bg-stone-100 text-stone-600 px-2 py-0.5 rounded-full mt-1">
-                {popupClub.clubTypeName}
-              </span>
+          <div className="p-3 text-right" dir="rtl">
+            {/* Top row: logo + name/area */}
+            <div className="flex gap-2.5 items-start">
+              {popupClub.logoUrl ? (
+                <img
+                  src={popupClub.logoUrl}
+                  alt=""
+                  className="w-10 h-10 rounded-lg object-cover shrink-0 bg-stone-100"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-50 to-emerald-100 flex items-center justify-center shrink-0">
+                  <span className="text-emerald-500 font-bold text-sm">{popupClub.name.charAt(0)}</span>
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <h3 className="font-bold text-stone-900 text-sm leading-tight truncate">
+                  {popupClub.name}
+                </h3>
+                {popupClub.areaName && (
+                  <p className="text-xs text-stone-400 mt-0.5 truncate">{popupClub.areaName}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Address */}
+            {popupClub.address && (
+              <p className="text-xs text-stone-500 mt-2 truncate">{popupClub.address}</p>
             )}
-            {popupClub.price != null && (
-              <p className="text-emerald-600 font-semibold text-sm mt-1">
-                {popupClub.price} ₪
-              </p>
-            )}
-            <button
-              onClick={() => navigate(`/club/${popupClub.id}`)}
-              className="mt-2 w-full text-center text-xs bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg transition font-medium"
-            >
-              פרטים
-            </button>
+
+            {/* Badge + price row */}
+            <div className="flex items-center justify-between mt-2">
+              <div className="flex items-center gap-2">
+                {popupClub.clubTypeName && (
+                  <span className="text-[11px] bg-stone-100 text-stone-600 px-2 py-0.5 rounded-full font-medium">
+                    {popupClub.clubTypeName}
+                  </span>
+                )}
+              </div>
+              {popupClub.price != null && (
+                <span className="text-emerald-600 font-bold text-base">
+                  {popupClub.price} <span className="text-xs font-medium">₪</span>
+                </span>
+              )}
+            </div>
+
+            {/* Details button */}
+            <div className="mt-3 flex justify-start">
+              <button
+                onClick={() => navigate(`/club/${popupClub.id}`)}
+                className="text-xs bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-1.5 rounded-full transition font-medium"
+              >
+                פרטים
+              </button>
+            </div>
           </div>
         </Popup>
       )}

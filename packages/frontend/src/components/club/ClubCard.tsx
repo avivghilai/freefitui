@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useSearchStore } from "@/stores/searchStore";
 import type { ClubSearchResult } from "@freefitui/shared";
 
@@ -20,17 +19,22 @@ function DefaultGymIcon() {
 }
 
 export default function ClubCard({ club, index = 0 }: ClubCardProps) {
-  const navigate = useNavigate();
   const setSelectedClubId = useSearchStore((s) => s.setSelectedClubId);
+  const setFlyToClub = useSearchStore((s) => s.setFlyToClub);
   const selectedClubId = useSearchStore((s) => s.selectedClubId);
   const [imgError, setImgError] = useState(false);
 
   const showFallback = !club.logoUrl || imgError;
   const isSelected = selectedClubId === club.id;
 
+  const handleClick = () => {
+    setSelectedClubId(club.id);
+    setFlyToClub({ lat: club.latitude, lng: club.longitude, id: club.id });
+  };
+
   return (
     <button
-      onClick={() => navigate(`/club/${club.id}`)}
+      onClick={handleClick}
       onMouseEnter={() => setSelectedClubId(club.id)}
       onMouseLeave={() => setSelectedClubId(null)}
       className={`animate-card-in w-full text-right bg-white rounded-2xl p-4 flex gap-3.5 items-center cursor-pointer transition-all duration-200 group border ${

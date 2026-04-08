@@ -89,6 +89,12 @@ app.get("/api/clubs", async (c) => {
       | "price"
       | undefined;
 
+    // Map viewport bounds (optional)
+    const north = parseFloatParam(c.req.query("north"));
+    const south = parseFloatParam(c.req.query("south"));
+    const east = parseFloatParam(c.req.query("east"));
+    const west = parseFloatParam(c.req.query("west"));
+
     // Build WHERE conditions
     const conditions: ReturnType<typeof eq>[] = [];
     let fuzzyMode = false;
@@ -113,6 +119,14 @@ app.get("/api/clubs", async (c) => {
       conditions.push(lte(clubs.latitude, box.maxLat));
       conditions.push(gte(clubs.longitude, box.minLng));
       conditions.push(lte(clubs.longitude, box.maxLng));
+    }
+
+    // Map viewport bounds filter (only when no text query)
+    if (!q && north != null && south != null && east != null && west != null) {
+      conditions.push(gte(clubs.latitude, south));
+      conditions.push(lte(clubs.latitude, north));
+      conditions.push(gte(clubs.longitude, west));
+      conditions.push(lte(clubs.longitude, east));
     }
 
     // Category filter — filter by clubTypeId

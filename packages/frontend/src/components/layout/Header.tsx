@@ -1,5 +1,4 @@
 import SearchBar from "@/components/search/SearchBar";
-import LocationButton from "@/components/search/LocationButton";
 
 export default function Header() {
   return (
@@ -19,8 +18,6 @@ export default function Header() {
       <div className="flex-1 max-w-xl">
         <SearchBar />
       </div>
-
-      <LocationButton />
     </header>
   );
 }
