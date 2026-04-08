@@ -1,6 +1,7 @@
 node_modules/
 dist/
 .sst/
+cdk.out/
 .env
 .env.local
 *.tsbuildinfo
