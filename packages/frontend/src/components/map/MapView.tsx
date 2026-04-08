@@ -192,6 +192,14 @@ export default function MapView() {
           if (club) {
             setSelectedClubId(club.id);
             setPopupClub(club);
+            // Pan map so popup is visible (offset upward to make room for popup)
+            isAnimatingRef.current = true;
+            rawMap.easeTo({
+              center: [club.longitude, club.latitude],
+              offset: [0, -80],
+              duration: 400,
+            });
+            setTimeout(() => { isAnimatingRef.current = false; }, 600);
           }
         }
         return;
