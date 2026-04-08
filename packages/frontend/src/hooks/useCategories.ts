@@ -1,8 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchApi } from "@/api/client";
 
+interface CategoryItem {
+  id: number;
+  name: string;
+  count?: number;
+  subcategories: { id: number; name: string }[];
+}
+
 interface CategoryResponse {
-  categories: { id: number; name: string; subcategories: { id: number; name: string }[] }[];
+  categories: CategoryItem[];
 }
 
 export function useCategories() {

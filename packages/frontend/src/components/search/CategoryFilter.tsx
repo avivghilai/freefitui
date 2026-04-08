@@ -41,6 +41,11 @@ export default function CategoryFilter() {
           }`}
         >
           {cat.name}
+          {cat.count != null && (
+            <span className={`mr-1.5 text-[11px] ${categoryId === cat.id ? "text-white/70" : "text-warm-800/30"}`}>
+              {cat.count}
+            </span>
+          )}
         </button>
       ))}
     </div>

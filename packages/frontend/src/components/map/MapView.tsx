@@ -9,6 +9,7 @@ import Map, {
 import type { MapRef, MapLayerMouseEvent, GeoJSONSource } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useMapClubs } from "@/hooks/useMapClubs";
+import { useClubs } from "@/hooks/useClubs";
 import { useSearchStore } from "@/stores/searchStore";
 import type { ClubSearchResult } from "@freefitui/shared";
 
@@ -47,6 +48,7 @@ export default function MapView() {
   const navigate = useNavigate();
   const mapRef = useRef<MapRef>(null);
   const { data } = useMapClubs();
+  const { data: listData } = useClubs(); // list results for tighter fitBounds
   const selectedClubId = useSearchStore((s) => s.selectedClubId);
   const setSelectedClubId = useSearchStore((s) => s.setSelectedClubId);
   const query = useSearchStore((s) => s.query);
@@ -84,28 +86,37 @@ export default function MapView() {
     };
   }, [clubs]);
 
-  // Fit bounds when search/filter changes
+  // Fit bounds when search results change
+  // Use list results (top relevant hits) for tighter bounds when searching
+  const boundsClubs = useMemo(() => {
+    const hasActiveFilter = query || cityId || categoryId;
+    if (hasActiveFilter && listData?.clubs?.length) {
+      return listData.clubs;
+    }
+    return clubs;
+  }, [query, cityId, categoryId, listData, clubs]);
+
   useEffect(() => {
-    if (!mapLoadedRef.current || clubs.length === 0) return;
+    if (!mapLoadedRef.current || boundsClubs.length === 0) return;
 
-    const filterKey = `${query}|${cityId}|${categoryId}`;
+    const dataKey = boundsClubs.length + "|" + boundsClubs.slice(0, 5).map((c) => c.id).join(",");
+    if (dataKey === prevFilterRef.current) return;
+    prevFilterRef.current = dataKey;
 
-    // Skip if filters haven't changed (e.g. initial load or same filter)
-    if (filterKey === prevFilterRef.current) return;
-    prevFilterRef.current = filterKey;
-
-    const lngs = clubs.map((c) => c.longitude);
-    const lats = clubs.map((c) => c.latitude);
+    const lngs = boundsClubs.map((c) => c.longitude);
+    const lats = boundsClubs.map((c) => c.latitude);
     const minLng = Math.min(...lngs);
     const maxLng = Math.max(...lngs);
     const minLat = Math.min(...lats);
     const maxLat = Math.max(...lats);
 
-    // If all clubs are at the same point, just center
-    if (minLng === maxLng && minLat === maxLat) {
+    // If all clubs are at roughly the same point, zoom in tight
+    const lngSpan = maxLng - minLng;
+    const latSpan = maxLat - minLat;
+    if (lngSpan < 0.01 && latSpan < 0.01) {
       mapRef.current?.flyTo({
-        center: [minLng, minLat],
-        zoom: 14,
+        center: [(minLng + maxLng) / 2, (minLat + maxLat) / 2],
+        zoom: 15,
         duration: 800,
       });
       return;
@@ -116,9 +127,9 @@ export default function MapView() {
         [minLng, minLat],
         [maxLng, maxLat],
       ],
-      { padding: 60, duration: 800, maxZoom: 15 }
+      { padding: { top: 60, bottom: 60, left: 60, right: 60 }, duration: 800, maxZoom: 16 }
     );
-  }, [clubs, query, cityId, categoryId]);
+  }, [boundsClubs]);
 
   // Find a club by ID from the data array
   const findClub = useCallback(
@@ -227,8 +238,8 @@ export default function MapView() {
         type="geojson"
         data={geojsonData}
         cluster={true}
-        clusterMaxZoom={14}
-        clusterRadius={50}
+        clusterMaxZoom={12}
+        clusterRadius={30}
       >
         {/* Cluster circles */}
         <Layer

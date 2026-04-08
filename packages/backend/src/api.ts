@@ -115,21 +115,9 @@ app.get("/api/clubs", async (c) => {
       conditions.push(lte(clubs.longitude, box.maxLng));
     }
 
-    // Category filter — use clubTypeId as primary filter
-    // (club_categories junction table is sparsely populated)
+    // Category filter — filter by clubTypeId
     if (categoryId != null) {
-      // First try club_categories junction table
-      const catRows = await db
-        .select({ clubId: clubCategories.clubId })
-        .from(clubCategories)
-        .where(eq(clubCategories.categoryId, categoryId));
-      const clubIdsForCategory = catRows.map((r) => r.clubId);
-      if (clubIdsForCategory.length > 0) {
-        conditions.push(inArray(clubs.id, clubIdsForCategory));
-      } else {
-        // Fallback: match by clubTypeId
-        conditions.push(eq(clubs.clubTypeId, categoryId));
-      }
+      conditions.push(eq(clubs.clubTypeId, categoryId));
     }
 
     const whereClause =
@@ -388,28 +376,26 @@ app.get("/api/categories", async (c) => {
   try {
     const db = getDb();
 
-    const allCategories = await db
-      .select()
-      .from(categories)
-      .orderBy(asc(categories.name));
+    // Use actual club types (with counts) instead of the categories table,
+    // since clubTypeId is what we filter on and maps directly to clubs
+    const clubTypes = await db
+      .select({
+        id: clubs.clubTypeId,
+        name: clubs.clubTypeName,
+        count: count(),
+      })
+      .from(clubs)
+      .groupBy(clubs.clubTypeId, clubs.clubTypeName)
+      .orderBy(desc(count()));
 
-    const allSubcategories = await db
-      .select()
-      .from(subcategories)
-      .orderBy(asc(subcategories.name));
-
-    // Group subcategories by categoryId
-    const subMap = new Map<number, typeof allSubcategories>();
-    for (const sub of allSubcategories) {
-      const existing = subMap.get(sub.categoryId) ?? [];
-      existing.push(sub);
-      subMap.set(sub.categoryId, existing);
-    }
-
-    const result = allCategories.map((cat) => ({
-      ...cat,
-      subcategories: subMap.get(cat.id) ?? [],
-    }));
+    const result = clubTypes
+      .filter((ct) => ct.id != null && ct.name != null && ct.count > 0)
+      .map((ct) => ({
+        id: ct.id!,
+        name: ct.name!,
+        count: Number(ct.count),
+        subcategories: [],
+      }));
 
     c.header("Cache-Control", "public, max-age=3600");
     return c.json({ categories: result });
