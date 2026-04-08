@@ -26,7 +26,7 @@ export default function SearchBar() {
   }, []);
 
   return (
-    <div className={`relative transition-all duration-200 ${focused ? "scale-[1.01]" : ""}`}>
+    <div className="relative transition-all duration-200">
       <svg
         className={`absolute right-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] pointer-events-none transition-colors duration-200 ${
           focused ? "text-emerald-500" : "text-warm-800/40"
@@ -46,7 +46,7 @@ export default function SearchBar() {
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         placeholder="חיפוש מועדון, עיר או פעילות..."
-        className="w-full rounded-xl bg-warm-100 pr-11 pl-4 py-2.5 text-sm text-warm-900 placeholder:text-warm-800/40 outline-none transition-all duration-200 border border-transparent focus:bg-white focus:border-emerald-500/30 focus:shadow-[0_0_0_3px_rgba(16,185,129,0.08)]"
+        className="w-full rounded-xl bg-warm-100 pr-11 pl-4 py-2.5 text-base text-warm-900 placeholder:text-warm-800/40 outline-none transition-all duration-200 border border-transparent focus:bg-white focus:border-emerald-500/30 focus:shadow-[0_0_0_3px_rgba(16,185,129,0.08)]"
       />
     </div>
   );

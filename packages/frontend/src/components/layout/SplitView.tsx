@@ -37,7 +37,8 @@ export default function SplitView({ list, map }: SplitViewProps) {
         {/* Mobile toggle button — sits at bottom of map area */}
         <button
           onClick={handleToggle}
-          className="lg:hidden absolute bottom-3 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-sm shadow-lg rounded-full px-4 py-2 text-[13px] font-semibold text-warm-800 border border-warm-200/60 flex items-center gap-1.5 z-20 active:scale-95 transition-all"
+          className="lg:hidden absolute left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-sm shadow-lg rounded-full px-4 py-2 text-[13px] font-semibold text-warm-800 border border-warm-200/60 flex items-center gap-1.5 z-20 active:scale-95 transition-all"
+          style={{ bottom: mapExpanded ? "calc(1.5rem + env(safe-area-inset-bottom, 0px))" : "0.75rem" }}
         >
           {mapExpanded ? (
             <>
