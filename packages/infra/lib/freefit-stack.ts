@@ -10,6 +10,9 @@ import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
 import * as events from "aws-cdk-lib/aws-events";
 import * as targets from "aws-cdk-lib/aws-events-targets";
 import * as ssm from "aws-cdk-lib/aws-ssm";
+import * as acm from "aws-cdk-lib/aws-certificatemanager";
+import * as route53 from "aws-cdk-lib/aws-route53";
+import * as route53targets from "aws-cdk-lib/aws-route53-targets";
 import type { Construct } from "constructs";
 import * as path from "path";
 import { fileURLToPath } from "url";
@@ -133,7 +136,20 @@ export class FreeFitStack extends cdk.Stack {
       `${httpApi.httpApiId}.execute-api.${this.region}.amazonaws.com`
     );
 
+    // Domain + certificate
+    const certificate = acm.Certificate.fromCertificateArn(
+      this, "Certificate",
+      "REDACTED_CERTIFICATE_ARN"
+    );
+
+    const hostedZone = route53.HostedZone.fromHostedZoneAttributes(
+      this, "HostedZone",
+      { hostedZoneId: "REDACTED_HOSTED_ZONE_ID", zoneName: "freef.it" }
+    );
+
     const distribution = new cloudfront.Distribution(this, "Distribution", {
+      domainNames: ["freef.it"],
+      certificate,
       defaultBehavior: {
         origin: origins.S3BucketOrigin.withOriginAccessControl(frontendBucket),
         viewerProtocolPolicy:
@@ -176,6 +192,17 @@ export class FreeFitStack extends cdk.Stack {
       destinationBucket: frontendBucket,
       distribution,
       distributionPaths: ["/*"],
+    });
+
+    // -----------------------------------------------------------------------
+    // Route53 DNS record
+    // -----------------------------------------------------------------------
+    new route53.ARecord(this, "DnsRecord", {
+      zone: hostedZone,
+      recordName: "freef.it",
+      target: route53.RecordTarget.fromAlias(
+        new route53targets.CloudFrontTarget(distribution)
+      ),
     });
 
     // -----------------------------------------------------------------------
