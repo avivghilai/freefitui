@@ -62,6 +62,8 @@ export default function MapView() {
   const [popupClub, setPopupClub] = useState<ClubSearchResult | null>(null);
   const prevFilterRef = useRef<string>("");
   const mapLoadedRef = useRef(false);
+  const isAnimatingRef = useRef(false);
+  const moveEndTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const clubs = useMemo(() => {
     if (!data?.clubs) return [];
@@ -91,23 +93,23 @@ export default function MapView() {
     };
   }, [clubs]);
 
-  // Fit bounds when search results change
-  // Use list results (top relevant hits) for tighter bounds when searching
-  const boundsClubs = useMemo(() => {
-    const hasActiveFilter = query || cityId || categoryId;
-    if (hasActiveFilter && listData?.clubs?.length) {
-      return listData.clubs;
-    }
-    return clubs;
-  }, [query, cityId, categoryId, listData, clubs]);
-
+  // Fit bounds ONLY when explicit filters change (query/city/category),
+  // NOT when map bounds change (which would cause a circular dependency).
+  // Uses listData (top relevant results) for tighter zoom.
   useEffect(() => {
-    if (!mapLoadedRef.current || boundsClubs.length === 0) return;
+    if (!mapLoadedRef.current) return;
 
-    const dataKey = boundsClubs.length + "|" + boundsClubs.slice(0, 5).map((c) => c.id).join(",");
-    if (dataKey === prevFilterRef.current) return;
-    prevFilterRef.current = dataKey;
+    const filterKey = `${query}|${cityId}|${categoryId}`;
+    if (filterKey === prevFilterRef.current) return;
+    prevFilterRef.current = filterKey;
 
+    // No active filter = don't move the map (let user browse freely)
+    if (!query && !cityId && !categoryId) return;
+
+    // Wait for list data to arrive for this filter
+    if (!listData?.clubs?.length) return;
+
+    const boundsClubs = listData.clubs;
     const lngs = boundsClubs.map((c) => c.longitude);
     const lats = boundsClubs.map((c) => c.latitude);
     const minLng = Math.min(...lngs);
@@ -115,7 +117,8 @@ export default function MapView() {
     const minLat = Math.min(...lats);
     const maxLat = Math.max(...lats);
 
-    // If all clubs are at roughly the same point, zoom in tight
+    isAnimatingRef.current = true;
+
     const lngSpan = maxLng - minLng;
     const latSpan = maxLat - minLat;
     if (lngSpan < 0.01 && latSpan < 0.01) {
@@ -124,17 +127,19 @@ export default function MapView() {
         zoom: 15,
         duration: 800,
       });
-      return;
+    } else {
+      mapRef.current?.fitBounds(
+        [
+          [minLng, minLat],
+          [maxLng, maxLat],
+        ],
+        { padding: { top: 60, bottom: 60, left: 60, right: 60 }, duration: 800, maxZoom: 16 }
+      );
     }
 
-    mapRef.current?.fitBounds(
-      [
-        [minLng, minLat],
-        [maxLng, maxLat],
-      ],
-      { padding: { top: 60, bottom: 60, left: 60, right: 60 }, duration: 800, maxZoom: 16 }
-    );
-  }, [boundsClubs]);
+    // Allow onMoveEnd to fire again after the animation completes
+    setTimeout(() => { isAnimatingRef.current = false; }, 1000);
+  }, [query, cityId, categoryId, listData]);
 
   // Find a club by ID from the data array
   const findClub = useCallback(
@@ -232,27 +237,32 @@ export default function MapView() {
     }
   }, [setMapBounds]);
 
-  // Update map bounds when user pans/zooms (Issue 3)
+  // Update map bounds when user pans/zooms — debounced and skips programmatic moves
   const handleMoveEnd = useCallback(
     (_e: ViewStateChangeEvent) => {
-      const map = mapRef.current;
-      if (!map) return;
-      const bounds = map.getBounds();
-      if (bounds) {
-        setMapBounds({
-          north: bounds.getNorth(),
-          south: bounds.getSouth(),
-          east: bounds.getEast(),
-          west: bounds.getWest(),
-        });
-      }
+      if (isAnimatingRef.current) return;
+      if (moveEndTimerRef.current) clearTimeout(moveEndTimerRef.current);
+      moveEndTimerRef.current = setTimeout(() => {
+        const map = mapRef.current;
+        if (!map) return;
+        const bounds = map.getBounds();
+        if (bounds) {
+          setMapBounds({
+            north: bounds.getNorth(),
+            south: bounds.getSouth(),
+            east: bounds.getEast(),
+            west: bounds.getWest(),
+          });
+        }
+      }, 300);
     },
     [setMapBounds]
   );
 
-  // Fly to club when card is clicked (Issue 9)
+  // Fly to club when card is clicked
   useEffect(() => {
     if (!flyToClub || !mapRef.current) return;
+    isAnimatingRef.current = true;
     mapRef.current.flyTo({
       center: [flyToClub.lng, flyToClub.lat],
       zoom: 15,
@@ -264,6 +274,7 @@ export default function MapView() {
       setPopupClub(club);
     }
     setFlyToClub(null);
+    setTimeout(() => { isAnimatingRef.current = false; }, 1000);
   }, [flyToClub, findClub, setSelectedClubId, setFlyToClub]);
 
   return (
