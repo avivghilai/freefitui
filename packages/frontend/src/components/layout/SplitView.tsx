@@ -9,22 +9,19 @@ export default function SplitView({ list, map }: SplitViewProps) {
   const [mapExpanded, setMapExpanded] = useState(false);
 
   const handleToggle = useCallback(() => {
-    setMapExpanded((prev) => {
-      const next = !prev;
-      // After the CSS transition completes, tell Mapbox to resize
-      setTimeout(() => {
-        window.dispatchEvent(new Event("resize"));
-      }, 350);
-      return next;
-    });
+    setMapExpanded((prev) => !prev);
+    // Let Mapbox know the container changed size after CSS transition
+    setTimeout(() => {
+      window.dispatchEvent(new Event("resize"));
+    }, 350);
   }, []);
 
   return (
     <div className="flex flex-col lg:flex-row h-[calc(100vh-4rem)] mt-16">
       {/* List panel */}
       <div
-        className={`order-2 lg:order-1 flex-1 lg:flex-none lg:w-[38%] xl:w-[35%] overflow-y-auto bg-warm-50 smooth-scroll transition-all duration-300 ${
-          mapExpanded ? "hidden lg:block" : ""
+        className={`order-2 lg:order-1 lg:flex-none lg:w-[38%] xl:w-[35%] overflow-y-auto bg-warm-50 smooth-scroll transition-all duration-300 ${
+          mapExpanded ? "h-0 overflow-hidden lg:h-auto lg:overflow-y-auto" : "flex-1"
         }`}
       >
         {list}
@@ -35,14 +32,12 @@ export default function SplitView({ list, map }: SplitViewProps) {
         className={`order-1 lg:order-2 shrink-0 lg:flex-1 relative transition-all duration-300 ${
           mapExpanded ? "flex-1" : "h-[40vh] lg:h-auto"
         }`}
-        style={mapExpanded ? { height: "calc(100vh - 4rem)" } : undefined}
       >
         {map}
-        {/* Mobile toggle button — positioned above browser nav bar */}
+        {/* Mobile toggle button — sits at bottom of map area */}
         <button
           onClick={handleToggle}
-          className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-white shadow-xl rounded-full px-5 py-2.5 text-[13px] font-semibold text-warm-800 border border-warm-200/60 flex items-center gap-1.5 z-50 active:scale-95 transition-all"
-          style={{ paddingBottom: "max(0.625rem, env(safe-area-inset-bottom))" }}
+          className="lg:hidden absolute bottom-3 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-sm shadow-lg rounded-full px-4 py-2 text-[13px] font-semibold text-warm-800 border border-warm-200/60 flex items-center gap-1.5 z-20 active:scale-95 transition-all"
         >
           {mapExpanded ? (
             <>
