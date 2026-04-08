@@ -14,11 +14,12 @@
   },
   "dependencies": {
     "@freefitui/shared": "workspace:*",
+    "@hono/node-server": "^1.13.0",
     "@neondatabase/serverless": "0.10.4",
     "dotenv": "^17.4.1",
     "drizzle-orm": "^0.39.0",
-    "@hono/node-server": "^1.13.0",
-    "hono": "^4.7.0"
+    "hono": "^4.7.0",
+    "postgres": "^3.4.9"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
