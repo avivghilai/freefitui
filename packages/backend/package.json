@@ -1,0 +1,30 @@
+{
+  "name": "@freefitui/backend",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/dev.ts",
+    "dev:sst": "sst dev",
+    "deploy": "sst deploy",
+    "sync": "tsx src/functions/sync.ts",
+    "db:push": "drizzle-kit push",
+    "db:generate": "drizzle-kit generate",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@freefitui/shared": "workspace:*",
+    "@neondatabase/serverless": "0.10.4",
+    "dotenv": "^17.4.1",
+    "drizzle-orm": "^0.39.0",
+    "@hono/node-server": "^1.13.0",
+    "hono": "^4.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "drizzle-kit": "^0.30.0",
+    "sst": "^3.7.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}

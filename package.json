@@ -1,0 +1,10 @@
+{
+  "name": "freefitui",
+  "private": true,
+  "scripts": {
+    "dev:frontend": "pnpm --filter frontend dev",
+    "dev:backend": "pnpm --filter backend dev",
+    "build": "pnpm -r build",
+    "sync": "pnpm --filter backend sync"
+  }
+}
