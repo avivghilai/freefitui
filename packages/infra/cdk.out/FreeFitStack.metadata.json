@@ -1,0 +1,234 @@
+{
+  "/FreeFitStack/SsmParameterValue:--freefit--database-url:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SsmParameterValuefreefitdatabaseurlC96584B6F00A464EAD1953AFF4B05118Parameter"
+    }
+  ],
+  "/FreeFitStack/SsmParameterValue:--freefit--freefit-token:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SsmParameterValuefreefitfreefittokenC96584B6F00A464EAD1953AFF4B05118Parameter"
+    }
+  ],
+  "/FreeFitStack/SsmParameterValue:--freefit--freefit-phone:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SsmParameterValuefreefitfreefitphoneC96584B6F00A464EAD1953AFF4B05118Parameter"
+    }
+  ],
+  "/FreeFitStack/SsmParameterValue:--freefit--freefit-id:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SsmParameterValuefreefitfreefitidC96584B6F00A464EAD1953AFF4B05118Parameter"
+    }
+  ],
+  "/FreeFitStack/SsmParameterValue:--freefit--freefit-binid:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SsmParameterValuefreefitfreefitbinidC96584B6F00A464EAD1953AFF4B05118Parameter"
+    }
+  ],
+  "/FreeFitStack/SsmParameterValue:--freefit--mapbox-token:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SsmParameterValuefreefitmapboxtokenC96584B6F00A464EAD1953AFF4B05118Parameter"
+    }
+  ],
+  "/FreeFitStack/Custom::S3AutoDeleteObjectsCustomResourceProvider": [
+    {
+      "type": "aws:cdk:is-custom-resource-handler-customResourceProvider",
+      "data": true
+    }
+  ],
+  "/FreeFitStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C": [
+    {
+      "type": "aws:cdk:is-custom-resource-handler-singleton",
+      "data": true
+    },
+    {
+      "type": "aws:cdk:is-custom-resource-handler-runtime-family",
+      "data": 2
+    }
+  ],
+  "/FreeFitStack/CloudFrontUrl": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CloudFrontUrl"
+    }
+  ],
+  "/FreeFitStack/ApiUrl": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiUrl"
+    }
+  ],
+  "/FreeFitStack/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    }
+  ],
+  "/FreeFitStack/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    }
+  ],
+  "/FreeFitStack/ApiFunction/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiFunctionCE271BD4"
+    }
+  ],
+  "/FreeFitStack/SyncFunction/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SyncFunction954A8072"
+    }
+  ],
+  "/FreeFitStack/DailySyncRule/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DailySyncRuleA42BF586"
+    }
+  ],
+  "/FreeFitStack/DailySyncRule/AllowEventRuleFreeFitStackSyncFunction70E49C64": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DailySyncRuleAllowEventRuleFreeFitStackSyncFunction70E49C649668AB1F"
+    }
+  ],
+  "/FreeFitStack/HttpApi/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "HttpApiF5A9A8A7"
+    }
+  ],
+  "/FreeFitStack/FrontendBucket/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "FrontendBucketEFE2E19C"
+    },
+    {
+      "type": "aws:cdk:analytics:mixin",
+      "data": {
+        "mixin": "aws-cdk-lib.aws_s3.mixins.BucketAutoDeleteObjects"
+      }
+    }
+  ],
+  "/FreeFitStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+    }
+  ],
+  "/FreeFitStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F"
+    }
+  ],
+  "/FreeFitStack/Distribution/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Distribution830FAC52"
+    }
+  ],
+  "/FreeFitStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536"
+    }
+  ],
+  "/FreeFitStack/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    }
+  ],
+  "/FreeFitStack/ApiFunction/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiFunctionServiceRole52B9747B"
+    }
+  ],
+  "/FreeFitStack/SyncFunction/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SyncFunctionServiceRole08BE3333"
+    }
+  ],
+  "/FreeFitStack/HttpApi/DefaultStage/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "HttpApiDefaultStage3EEB07D6"
+    }
+  ],
+  "/FreeFitStack/HttpApi/GET--api--{proxy+}/ApiIntegration-Permission": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "HttpApiGETapiproxyApiIntegrationPermissionB6B584A3"
+    }
+  ],
+  "/FreeFitStack/HttpApi/GET--api--{proxy+}/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "HttpApiGETapiproxy6870B9C8"
+    }
+  ],
+  "/FreeFitStack/FrontendBucket/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "FrontendBucketPolicy1DFF75D9"
+    },
+    {
+      "type": "aws:cdk:analytics:mixin",
+      "data": {
+        "mixin": "aws-cdk-lib.aws_s3.mixins.BucketPolicyStatements"
+      }
+    }
+  ],
+  "/FreeFitStack/FrontendBucket/AutoDeleteObjectsCustomResource/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "FrontendBucketAutoDeleteObjectsCustomResourceDB860B32"
+    }
+  ],
+  "/FreeFitStack/DeployFrontend/AwsCliLayer/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DeployFrontendAwsCliLayerD774ED8F"
+    }
+  ],
+  "/FreeFitStack/DeployFrontend/CustomResource/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DeployFrontendCustomResource3E02C3B7"
+    }
+  ],
+  "/FreeFitStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265"
+    }
+  ],
+  "/FreeFitStack/HttpApi/GET--api--{proxy+}/ApiIntegration/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "HttpApiGETapiproxyApiIntegrationCBDFA6CB"
+    }
+  ],
+  "/FreeFitStack/Distribution/Origin1/S3OriginAccessControl/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DistributionOrigin1S3OriginAccessControlEB606076"
+    }
+  ],
+  "/FreeFitStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF"
+    }
+  ]
+}

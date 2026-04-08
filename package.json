@@ -4,7 +4,10 @@
   "scripts": {
     "dev:frontend": "pnpm --filter frontend dev",
     "dev:backend": "pnpm --filter backend dev",
-    "build": "pnpm -r build",
-    "sync": "pnpm --filter backend sync"
+    "build": "pnpm --filter frontend build",
+    "sync": "pnpm --filter backend sync",
+    "deploy": "pnpm run build && pnpm --filter @freefitui/infra deploy",
+    "cdk:synth": "pnpm --filter @freefitui/infra synth",
+    "cdk:diff": "pnpm --filter @freefitui/infra diff"
   }
 }
