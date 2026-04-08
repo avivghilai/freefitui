@@ -6,7 +6,7 @@ import MapView from "@/components/map/MapView";
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-stone-50">
+    <div className="min-h-screen bg-warm-50">
       <Header />
       <SplitView
         list={

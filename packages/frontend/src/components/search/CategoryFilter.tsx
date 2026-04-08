@@ -9,11 +9,8 @@ export default function CategoryFilter() {
   if (isLoading) {
     return (
       <div className="flex gap-2 py-3 px-4">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <div
-            key={i}
-            className="h-8 w-20 rounded-full bg-stone-200 animate-pulse shrink-0"
-          />
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="h-9 w-20 rounded-xl skeleton shrink-0" />
         ))}
       </div>
     );
@@ -22,13 +19,13 @@ export default function CategoryFilter() {
   if (!categories?.length) return null;
 
   return (
-    <div className="flex gap-2 py-3 px-4 overflow-x-auto scrollbar-hide">
+    <div className="flex gap-2 py-3 px-4 overflow-x-auto scrollbar-hide border-b border-warm-200/40">
       <button
         onClick={() => setCategoryId(null)}
-        className={`shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition ${
+        className={`shrink-0 px-4 py-2 rounded-xl text-[13px] font-semibold transition-all duration-200 ${
           categoryId === null
-            ? "bg-emerald-500 text-white"
-            : "bg-stone-100 text-stone-600 hover:bg-stone-200"
+            ? "bg-emerald-500 text-white shadow-md shadow-emerald-500/25"
+            : "bg-white text-warm-800/70 border border-warm-200/60 hover:border-emerald-400/40 hover:text-emerald-600"
         }`}
       >
         הכל
@@ -36,13 +33,11 @@ export default function CategoryFilter() {
       {categories.map((cat) => (
         <button
           key={cat.id}
-          onClick={() =>
-            setCategoryId(categoryId === cat.id ? null : cat.id)
-          }
-          className={`shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition ${
+          onClick={() => setCategoryId(categoryId === cat.id ? null : cat.id)}
+          className={`shrink-0 px-4 py-2 rounded-xl text-[13px] font-semibold transition-all duration-200 ${
             categoryId === cat.id
-              ? "bg-emerald-500 text-white"
-              : "bg-stone-100 text-stone-600 hover:bg-stone-200"
+              ? "bg-emerald-500 text-white shadow-md shadow-emerald-500/25"
+              : "bg-white text-warm-800/70 border border-warm-200/60 hover:border-emerald-400/40 hover:text-emerald-600"
           }`}
         >
           {cat.name}

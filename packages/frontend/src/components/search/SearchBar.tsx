@@ -4,6 +4,7 @@ import { useSearchStore } from "@/stores/searchStore";
 export default function SearchBar() {
   const setQuery = useSearchStore((s) => s.setQuery);
   const [value, setValue] = useState("");
+  const [focused, setFocused] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleChange = useCallback(
@@ -25,12 +26,14 @@ export default function SearchBar() {
   }, []);
 
   return (
-    <div className="relative">
+    <div className={`relative transition-all duration-200 ${focused ? "scale-[1.01]" : ""}`}>
       <svg
-        className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400 pointer-events-none"
+        className={`absolute right-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] pointer-events-none transition-colors duration-200 ${
+          focused ? "text-emerald-500" : "text-warm-200"
+        }`}
         fill="none"
         stroke="currentColor"
-        strokeWidth={2}
+        strokeWidth={2.2}
         viewBox="0 0 24 24"
       >
         <circle cx="11" cy="11" r="8" />
@@ -40,8 +43,10 @@ export default function SearchBar() {
         type="text"
         value={value}
         onChange={handleChange}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
         placeholder="חיפוש מועדון, עיר או פעילות..."
-        className="w-full rounded-full bg-stone-100 pr-10 pl-4 py-2 text-sm text-stone-900 placeholder:text-stone-400 outline-none transition focus:bg-white focus:ring-2 focus:ring-emerald-500/30"
+        className="w-full rounded-xl bg-warm-100 pr-11 pl-4 py-2.5 text-sm text-warm-900 placeholder:text-warm-200 outline-none transition-all duration-200 border border-transparent focus:bg-white focus:border-emerald-500/30 focus:shadow-[0_0_0_3px_rgba(16,185,129,0.08)]"
       />
     </div>
   );

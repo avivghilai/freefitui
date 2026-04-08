@@ -29,25 +29,21 @@ export default function LocationButton() {
       onClick={handleClick}
       disabled={loading}
       title={error ?? (isActive ? "ביטול חיפוש לפי מיקום" : "חיפוש לפי מיקום")}
-      className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition ${
+      className={`shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 ${
         isActive
-          ? "bg-emerald-500 text-white"
-          : "bg-stone-100 text-stone-500 hover:bg-stone-200"
-      } ${loading ? "animate-pulse" : ""}`}
+          ? "bg-emerald-500 text-white shadow-md shadow-emerald-500/25 hover:bg-emerald-600"
+          : "bg-warm-100 text-warm-800 hover:bg-warm-200 hover:text-emerald-600"
+      } ${loading ? "animate-gentle-pulse" : ""}`}
     >
       <svg
-        className="w-4 h-4"
+        className="w-[18px] h-[18px]"
         fill="none"
         stroke="currentColor"
         strokeWidth={2}
         viewBox="0 0 24 24"
       >
-        {/* Crosshair / location icon */}
         <circle cx="12" cy="12" r="3" />
-        <path
-          strokeLinecap="round"
-          d="M12 2v4m0 12v4m10-10h-4M6 12H2"
-        />
+        <path strokeLinecap="round" d="M12 2v4m0 12v4m10-10h-4M6 12H2" />
       </svg>
     </button>
   );
