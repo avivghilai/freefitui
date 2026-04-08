@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "synth": "cdk synth",
-    "deploy": "cdk deploy",
+    "cdk:deploy": "cdk deploy --require-approval never",
     "diff": "cdk diff",
     "destroy": "cdk destroy"
   },
