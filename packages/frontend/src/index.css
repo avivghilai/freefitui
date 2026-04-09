@@ -19,6 +19,16 @@
   --color-warm-900: #1a1a18;
 }
 
+/* Use dynamic viewport height so mobile browser chrome (bottom tab bar, address bar) never hides content */
+.app-height {
+  height: calc(100vh - 4rem);
+  height: calc(100dvh - 4rem);
+}
+.map-collapsed-height {
+  height: 40vh;
+  height: 40dvh;
+}
+
 /* Scrollbar hide */
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }

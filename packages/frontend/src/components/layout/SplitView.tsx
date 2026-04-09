@@ -17,7 +17,7 @@ export default function SplitView({ list, map }: SplitViewProps) {
   }, []);
 
   return (
-    <div className="flex flex-col lg:flex-row h-[calc(100vh-4rem)] mt-16">
+    <div className="flex flex-col lg:flex-row app-height mt-16">
       {/* List panel */}
       <div
         className={`order-2 lg:order-1 lg:flex-none lg:w-[38%] xl:w-[35%] overflow-y-auto bg-warm-50 smooth-scroll transition-all duration-300 ${
@@ -30,7 +30,7 @@ export default function SplitView({ list, map }: SplitViewProps) {
       {/* Map panel */}
       <div
         className={`order-1 lg:order-2 shrink-0 lg:flex-1 relative transition-all duration-300 ${
-          mapExpanded ? "flex-1" : "h-[40vh] lg:h-auto"
+          mapExpanded ? "flex-1" : "map-collapsed-height lg:h-auto"
         }`}
       >
         {map}
