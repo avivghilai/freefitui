@@ -12,3 +12,5 @@ cdk.out/
 screenshots/
 references/
 .claude/
+*.map
+cdk.context.json

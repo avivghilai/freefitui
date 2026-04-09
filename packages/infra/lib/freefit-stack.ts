@@ -136,19 +136,22 @@ export class FreeFitStack extends cdk.Stack {
       `${httpApi.httpApiId}.execute-api.${this.region}.amazonaws.com`
     );
 
-    // Domain + certificate
+    // Domain + certificate (values from cdk.context.json)
+    const domainName = this.node.getContext("domainName") as string;
+    const certificateArn = this.node.getContext("certificateArn") as string;
+    const hostedZoneId = this.node.getContext("hostedZoneId") as string;
+
     const certificate = acm.Certificate.fromCertificateArn(
-      this, "Certificate",
-      "REDACTED_CERTIFICATE_ARN"
+      this, "Certificate", certificateArn
     );
 
     const hostedZone = route53.HostedZone.fromHostedZoneAttributes(
       this, "HostedZone",
-      { hostedZoneId: "REDACTED_HOSTED_ZONE_ID", zoneName: "freef.it" }
+      { hostedZoneId, zoneName: domainName }
     );
 
     const distribution = new cloudfront.Distribution(this, "Distribution", {
-      domainNames: ["freef.it"],
+      domainNames: [domainName],
       certificate,
       defaultBehavior: {
         origin: origins.S3BucketOrigin.withOriginAccessControl(frontendBucket),
@@ -199,7 +202,7 @@ export class FreeFitStack extends cdk.Stack {
     // -----------------------------------------------------------------------
     new route53.ARecord(this, "DnsRecord", {
       zone: hostedZone,
-      recordName: "freef.it",
+      recordName: domainName,
       target: route53.RecordTarget.fromAlias(
         new route53targets.CloudFrontTarget(distribution)
       ),

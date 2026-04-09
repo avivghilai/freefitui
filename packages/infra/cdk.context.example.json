@@ -1,0 +1,5 @@
+{
+  "domainName": "your-domain.com",
+  "certificateArn": "arn:aws:acm:us-east-1:123456789012:certificate/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "hostedZoneId": "Z0123456789ABCDEFGHIJ"
+}

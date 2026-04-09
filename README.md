@@ -79,6 +79,12 @@ pnpm deploy
 
 Deploys to AWS `il-central-1`: frontend to S3/CloudFront, API + sync to Lambda, daily schedule via EventBridge.
 
+Infrastructure-specific values (domain, certificate ARN, hosted zone ID) are read from `packages/infra/cdk.context.json` — copy the example and fill in your own:
+
+```bash
+cp packages/infra/cdk.context.example.json packages/infra/cdk.context.json
+```
+
 ## API Endpoints
 
 | Endpoint | Description |
@@ -88,3 +94,11 @@ Deploys to AWS `il-central-1`: frontend to S3/CloudFront, API + sync to Lambda, 
 | `GET /api/clubs/:id/lessons` | Class schedule proxy |
 | `GET /api/cities` | List all cities |
 | `GET /api/categories` | List all categories |
+
+## Contributing
+
+Contributions are welcome! Fork the repo, create a branch, and open a PR. For bugs or feature ideas, open an issue first.
+
+## License
+
+[MIT](LICENSE)
