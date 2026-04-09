@@ -30,7 +30,7 @@ export default function SplitView({ list, map }: SplitViewProps) {
       {/* Map panel */}
       <div
         className={`order-1 lg:order-2 shrink-0 lg:flex-1 relative transition-all duration-300 ${
-          mapExpanded ? "flex-1" : "map-collapsed-height lg:h-auto"
+          mapExpanded ? "flex-1" : "map-collapsed-height lg:!h-auto"
         }`}
       >
         {map}
